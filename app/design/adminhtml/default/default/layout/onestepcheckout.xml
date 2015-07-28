@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<layout>
+	<!-- <adminhtml_sales_order_view>
+		<update handle="order_tab_info" />
+		<reference name="order_tab_info">
+			<action method="setTemplate"><template>onestepcheckout/info.phtml</template></action>
+		</reference>
+	</adminhtml_sales_order_view> -->	
+	
+	<!-- Order -->	
+	<adminhtml_sales_order_view>
+		<reference name="order_totals">
+			<block type="onestepcheckout/sales_order_totals_giftwrap" name="giftwrap" />			
+			<block type="onestepcheckout/sales_order_totals_discount" name="onestepcheckoutdiscount" />			
+		</reference>		
+		<reference name="order_item_extra_info">
+			<block type="onestepcheckout/adminhtml_sales_order_view_tab_survey"
+				as="onestepcheckout_order" />
+		</reference> 
+	</adminhtml_sales_order_view>
+	<adminhtml_sales_order_invoice_new>
+		<reference name="invoice_totals">
+			<block type="onestepcheckout/sales_order_totals_giftwrap" name="giftwrap" />			
+			<block type="onestepcheckout/sales_order_totals_discount" name="onestepcheckoutdiscount" />			
+		</reference>
+		<!-- <reference name="order_item_extra_info">
+			<block type="onestepcheckout/adminhtml_sales_order_view_tab_survey"
+				as="onestepcheckout_invoice" />
+		</reference> -->		
+	</adminhtml_sales_order_invoice_new>
+	<adminhtml_sales_order_invoice_view>
+		<reference name="invoice_totals">
+			<block type="onestepcheckout/sales_order_totals_giftwrap" name="giftwrap" />	
+			<block type="onestepcheckout/sales_order_totals_discount" name="onestepcheckoutdiscount" />	
+		</reference>		
+	</adminhtml_sales_order_invoice_view>
+	<adminhtml_sales_order_creditmemo_new>
+		<reference name="creditmemo_totals">
+			<block type="onestepcheckout/sales_order_totals_giftwrap" name="giftwrap" />			
+			<block type="onestepcheckout/sales_order_totals_discount" name="onestepcheckoutdiscount" />			
+		</reference>		
+	</adminhtml_sales_order_creditmemo_new>
+	<adminhtml_sales_order_creditmemo_view>
+		<reference name="creditmemo_totals">
+			<block type="onestepcheckout/sales_order_totals_giftwrap" name="giftwrap" />	
+			<block type="onestepcheckout/sales_order_totals_discount" name="onestepcheckoutdiscount" />						
+		</reference>		
+	</adminhtml_sales_order_creditmemo_view>
+</layout>

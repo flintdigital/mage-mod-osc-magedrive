@@ -1,0 +1,194 @@
+<?php $helper = Mage::helper('onestepcheckout'); ?>
+<?php if ($this->isShowShippingAddress()):?>
+	<div class="input-box input-different-shipping">
+		<input onclick="showDifferentAdress();" type="checkbox" name="shipping[different_shipping]" id="shipping:different_shipping" value="1" />
+		<label for="shipping:different_shipping"><?php echo $this->__('Ship to different address'); ?></label>
+	</div>
+<?php else:?>
+	<!--<li>
+		<input type="hidden" name="billing[use_for_shipping]" id="billing:use_for_shipping" value="1" />
+	</li>-->
+<?php endif;?>
+<?php if ($this->isShowShippingAddress()):?>
+	<div id="showhide_shipping" style="display:none;">
+		<h3 id="shipping_step_header" class="step_2"><?php echo($this->__("SHIPPING ADDRESS")); ?></h3>
+		<?php if ($this->customerHasAddresses()): ?>
+		  <p><?php echo $this->__('Select a shipping address from your address book or enter a new address.') ?></p>
+		  <p><?php echo $this->getAddressesHtmlSelect('shipping') ?></p>
+		<?php endif ?>
+		<fieldset class="group-select" id="shipping-new-address-form" <?php if ($this->customerHasAddresses()): ?>style="display:none"<?php endif ?>>
+			<input type="hidden" name="shipping[address_id]" value="<?php echo $this->getShippingAddress()->getId() ?>" id="shipping:address_id" />
+			<ul>				
+				<?php $fieldValue = $helper->getFieldValue() ?>
+				<?php $checkCountry = 0 ?>
+				<?php $checkRegion = 0 ?>
+				<?php for($i=0;$i<20;$i++): ?>
+					<?php if($helper->getFieldEnable($i)=='country') $checkCountry = 1 ?>
+					<?php if($helper->getFieldEnable($i)=='region') $checkRegion = 1 ?>
+					<?php if(!$helper->getFieldEnable($i)||$helper->getFieldEnable($i)=='0'||$helper->getFieldEnable($i)=='email' || 
+								$helper->getFieldEnable($i)=='birthday' || $helper->getFieldEnable($i)=='gender' || $helper->getFieldEnable($i)=='taxvat') continue; ?>
+					<?php if(($i%2==0) || (($i%2!=0)&&(!$helper->getFieldEnable($i-1)||$helper->getFieldEnable($i-1)=='0'||$helper->getFieldEnable($i-1)=='email'
+							|| $helper->getFieldEnable($i-1)=='birthday' || $helper->getFieldEnable($i-1)=='gender' || $helper->getFieldEnable($i-1)=='taxvat'))): ?>
+						<li>
+					<?php endif ?>
+						<?php if((($i%2==0) && ($helper->getFieldEnable($i)&&$helper->getFieldEnable($i)!='0') && (!$helper->getFieldEnable($i+1)||$helper->getFieldEnable($i+1)=='0'||$helper->getFieldEnable($i+1)=='email'
+									|| $helper->getFieldEnable($i+1)=='birthday' || $helper->getFieldEnable($i+1)=='gender' || $helper->getFieldEnable($i+1)=='taxvat'))
+								|| (($i%2!=0) && ($helper->getFieldEnable($i)&&$helper->getFieldEnable($i)!='0') && (!$helper->getFieldEnable($i-1) || $helper->getFieldEnable($i-1)=='0'|| $helper->getFieldEnable($i-1)=='email'
+										|| $helper->getFieldEnable($i-1)=='birthday' || $helper->getFieldEnable($i-1)=='gender' || $helper->getFieldEnable($i-1)=='taxvat'))): ?>
+							<div class="one-field">
+						<?php else: ?>
+							<div class="two-fields">
+						<?php endif ?>
+						<?php if(!$helper->getFieldEnable($i)||$helper->getFieldEnable($i)=='0') continue; ?>
+								<?php if($helper->getFieldEnable($i)=='street'): ?>
+									<label for="shipping:street1"><?php echo $this->__('Address') ?>
+										<?php if($helper->getFieldRequire($helper->getFieldEnable($i))): ?>
+											<span class="required">*</span>
+										<?php endif ?>
+									</label><br />
+									<input style="margin-bottom:10px;" type="text" title="<?php echo $this->__('Street Address') ?>" name="shipping[street][]" id="shipping:street1" value="<?php echo $this->htmlEscape($this->getShippingAddress()->getStreet(1)) ?>" class="<?php if($helper->getFieldRequire($helper->getFieldEnable($i))) echo 'required-entry'; ?> input-text"/>
+									<?php for ($_i=2, $_n=$this->helper('customer/address')->getStreetLines(); $_i<=$_n; $_i++): ?>
+										<input style="margin-bottom:10px;" type="text" title="<?php echo $this->__('Street Address '.$_i) ?>" name="shipping[street][]" id="shipping:street<?php echo $_i?>" value="<?php echo $this->htmlEscape($this->getShippingAddress()->getStreet($_i)) ?>" class="input-text" />
+									<?php endfor ?>
+								<?php elseif($helper->getFieldEnable($i)=='country'): ?>
+									<label for="shipping:country_id"><?php echo $this->__('Country') ?>
+										<?php if($helper->getFieldRequire($helper->getFieldEnable($i))): ?>
+											<span class="required">*</span>
+										<?php endif ?>
+									</label><br />
+									<?php echo $this->getCountryHtmlSelect('shipping') ?>
+									<?php if(!$helper->getFieldRequire($helper->getFieldEnable($i))): ?>	
+									<script type="text/javascript">
+										if($('shipping:country_id'))
+											$('shipping:country_id').removeClassName('validate-select');
+									</script>
+								<?php endif ?>
+								<?php elseif($helper->getFieldEnable($i)=='region'): ?>
+									<label for="shipping:region"><?php echo $this->__('State/Province') ?>
+									<?php if($helper->getFieldRequire($helper->getFieldEnable($i))): ?>
+										<span class="required">*</span>
+									<?php endif ?>
+									</label><br/>
+									<select id="shipping:region_id" name="shipping[region_id]" title="<?php echo $this->__('State/Province') ?>" class="<?php if($helper->getFieldRequire($helper->getFieldEnable($i))) echo "validate-select"; ?>" style="display:none;width:135px;" >
+										<option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+									</select>
+									<?php if(!$helper->enableGeoip()):?>
+										<script type="text/javascript">
+											$('shipping:region_id').setAttribute('defaultValue',  "<?php echo $this->htmlEscape($this->getShippingAddress()->getRegionId()) ?>");
+										</script>
+									<?php endif;?>
+									<input type="text" id="shipping:region" name="shipping[region]" value="<?php echo $this->htmlEscape($this->getShippingAddress()->getRegion()) ?>"  title="<?php echo $this->__('State/Province') ?>" class="<?php if($helper->getFieldRequire($helper->getFieldEnable($i))) echo 'required-entry'; ?> input-text" style="display:none" />
+								<?php elseif($helper->getFieldEnable($i)=='prefix'): ?>
+									<?php $customerNameBlock = Mage::getBlockSingleton('customer/widget_name') ?>
+									<label for="shipping:prefix"><?php echo $this->__('Prefix Name') ?>
+										<?php if($helper->getFieldRequire($helper->getFieldEnable($i))): ?>
+											<span class="required">*</span>
+										<?php endif ?>
+									</label><br />
+									<?php if ($customerNameBlock->getPrefixOptions()===false): ?>
+										<input type="text" id="<?php echo $customerNameBlock->getFieldId('prefix')?>" name="shipping[<?php echo $customerNameBlock->getFieldName('prefix')?>]" value="" title="<?php echo $this->__('Prefix') ?>" class="input-text <?php if($helper->getFieldRequire($helper->getFieldEnable($i))) echo "required-entry"; ?>" <?php echo $customerNameBlock->getFieldParams() ?> />
+									<?php else: ?>
+										<select id="<?php echo $customerNameBlock->getFieldId('prefix')?>" name="shipping[<?php echo $customerNameBlock->getFieldName('prefix')?>]" title="<?php echo $this->__('Prefix') ?>" class="<?php if($helper->getFieldRequire($helper->getFieldEnable($i))) echo "required-entry"; ?>" <?php echo $customerNameBlock->getFieldParams() ?>>
+											<?php foreach ($customerNameBlock->getPrefixOptions() as $_option): ?>
+												<option value="<?php echo $_option?>"><?php echo $this->__($_option)?></option>
+											<?php endforeach ?>
+										</select>
+									<?php endif; ?>
+								<?php elseif($helper->getFieldEnable($i)=='suffix'): ?>
+									<?php $customerNameBlock = Mage::getBlockSingleton('customer/widget_name') ?>
+									<label for="shipping:prefix"><?php echo $this->__('Suffix Name') ?>
+										<?php if($helper->getFieldRequire($helper->getFieldEnable($i))): ?>
+											<span class="required">*</span>
+										<?php endif ?>
+									</label><br />
+									<?php if ($customerNameBlock->getSuffixOptions()===false): ?>
+										<input type="text" id="<?php echo $customerNameBlock->getFieldId('suffix')?>" name="shipping[<?php echo $customerNameBlock->getFieldName('suffix')?>]" value="" title="<?php echo $this->__('Suffix') ?>" class="input-text <?php if($helper->getFieldRequire($helper->getFieldEnable($i))) echo "required-entry"; ?>" <?php echo $customerNameBlock->getFieldParams() ?> />
+									<?php else: ?>
+										<select id="<?php echo $customerNameBlock->getFieldId('suffix')?>" name="shipping[<?php echo $customerNameBlock->getFieldName('suffix')?>]" title="<?php echo $this->__('Suffix') ?>" class="<?php if($helper->getFieldRequire($helper->getFieldEnable($i))) echo "required-entry"; ?>" <?php echo $customerNameBlock->getFieldParams() ?>>
+											<?php foreach ($customerNameBlock->getSuffixOptions() as $_option): ?>
+												<option value="<?php echo $_option?>"><?php echo $this->__($_option)?></option>
+											<?php endforeach ?>
+										</select>
+									<?php endif; ?>
+								<?php else: ?>
+									<label for="shipping:<?php echo $helper->getFieldEnable($i); ?>"><?php echo $this->__($fieldValue[$helper->getFieldEnable($i)]) ?>
+										<?php if($helper->getFieldRequire($helper->getFieldEnable($i))||$helper->getFieldEnable($i)=='firstname'||$helper->getFieldEnable($i)=='lastname'): ?>
+											<span class="required">*</span>
+										<?php endif ?>
+									</label><br/>
+									<input type="text" id="shipping:<?php echo $helper->getFieldEnable($i); ?>" name="shipping[<?php echo $helper->getFieldEnable($i); ?>]" value="<?php echo $this->htmlEscape($this->getShippingAddress()->getData($helper->getFieldEnable($i))) ?>" title="<?php echo $this->__($fieldValue[$helper->getFieldEnable($i)]) ?>" class="input-text <?php if($helper->getFieldRequire($helper->getFieldEnable($i)) ||$helper->getFieldEnable($i)=='firstname'||$helper->getFieldEnable($i)=='lastname') echo 'required-entry'; ?>" />
+						
+								<?php endif ?>
+							</div>
+					<?php if(($i%2!=0)||(($i%2==0)&&(!$helper->getFieldEnable($i+1)||$helper->getFieldEnable($i+1)=='0'||$helper->getFieldEnable($i+1)=='email')
+								|| $helper->getFieldEnable($i+1)=='birthday' || $helper->getFieldEnable($i+1)=='gender' || $helper->getFieldEnable($i+1)=='taxvat')): ?>
+						</li>
+					<?php endif ?>
+				<?php endfor ?>
+				<?php if($checkCountry==0): ?>
+					<div style="display:none;">
+						<?php echo $this->getCountryHtmlSelect('shipping') ?>
+					</div>
+				<?php endif ?>
+				<?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+					<li><input type="checkbox" name="shipping[save_in_address_book]" value="1" title="<?php echo $this->__('Save in address book') ?>" id="shipping:save_in_address_book" <?php if ($this->getShippingAddress()->getSaveInAddressBook()):?> checked="checked"<?php endif;?> /> <label for="shipping:save_in_address_book"><?php echo $this->__('Save in address book') ?></label></li>
+				<?php else:?>
+					<li><input type="hidden" name="shipping[save_in_address_book]" value="1" /></li>
+				<?php endif;?>
+			</ul>
+		</fieldset> 
+	</div>
+<?php endif;?>
+<script type="text/javascript">
+//<![CDATA[	
+<?php if ($this->isShowShippingAddress()):?>
+	<?php if($checkRegion == 1): ?>
+		var shippingRegionUpdater = new RegionUpdater('shipping:country_id', 'shipping:region', 'shipping:region_id', countryRegions, undefined, 'shipping:postcode');
+	<?php endif;?>
+	<?php if(!$helper->getFieldRequire('region')): ?>	
+		if($('shipping:region_id')){
+			$('shipping:region_id').removeClassName('validate-select');
+			$('shipping:region_id').removeClassName('required-entry');
+		}
+	<?php endif ?>
+	function showDifferentAdress(){
+		if ($('shipping:different_shipping').checked) {
+			$('billing:use_for_shipping').value = '0';
+			$('showhide_shipping').style.display = 'block';
+			<?php if (!$this->isVirtual() && !Mage::helper('onestepcheckout')->isHideShippingMethod()):?>
+				change_class_name($('shipping_method_step_header'), 2, 3);
+				change_class_name($('payment_method_step_header'), 3, 4);
+				change_class_name($('review_step_header'), 4, 5);		
+			<?php else:?>
+				change_class_name($('payment_method_step_header'), 2, 3);
+				change_class_name($('review_step_header'), 3, 4);
+			<?php endif;?>
+		}
+		else {
+			$('billing:use_for_shipping').value = '1';
+			$('showhide_shipping').style.display = 'none';
+			<?php if (!$this->isVirtual() && !Mage::helper('onestepcheckout')->isHideShippingMethod()):?>
+				change_class_name($('shipping_method_step_header'), 3, 2);
+				change_class_name($('payment_method_step_header'), 4, 3);
+				change_class_name($('review_step_header'), 5, 4);
+			<?php else:?>
+				change_class_name($('payment_method_step_header'), 3, 2);
+				change_class_name($('review_step_header'), 4, 3);
+			<?php endif;?>
+		}
+
+		//<!-- if show different shipping address, save billing & shipping address when customer check the checkbox-->
+		<?php if ($this->configData['enable_ajax']):?>
+		save_address_information(save_address_url);
+		<?php endif;?>
+	}
+	
+	if ($('shipping-address-select')) {
+		Event.observe('shipping-address-select', 'change', function() {
+			var isNew = $('shipping-address-select').value ? false : true;
+			setNewAddress(isNew, 'shipping', save_address_url);
+		});
+	}
+<?php endif;?>
+//]]>
+</script>

@@ -1,0 +1,35 @@
+
+<?php
+	$orderId=Mage::app()->getRequest()->getParam('order_id');
+	//$survey = Mage::getModel('onestepcheckout/survey')->load($orderId, 'order_id');
+	$comment = Mage::getModel('sales/order')->load($orderId)->getOnestepcheckoutOrderComment();
+?>
+<?php if($this->getLastItem()) {?>
+</table>
+<?php if($comment):?>
+<div class="entry-edit" >
+	<fieldset>
+		<div class="survey">
+			<div class="entry-edit-head">
+				<h4 class="icon-head head-account">
+					<?php echo Mage::helper('onestepcheckout')->__('Comment') ?>
+				</h4>								
+			</div>
+		</div>
+		<div class="grid">
+			<div class="hor-scroll">
+				<table cellspacing="0" class="data">
+					<tbody>						
+						<tr class="even">
+							<td class="a-left">
+							<?php echo $comment;?>
+							</td>
+						</tr>										
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</fieldset>
+</div>
+<?php endif;?>
+<?php } ?>
