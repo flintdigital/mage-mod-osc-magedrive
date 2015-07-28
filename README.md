@@ -48,12 +48,12 @@ You can set which fields are required on checkout page.
 1. **Enable custom size** Allows to set popup size width and height.
 
 
-Admin Order notification
+####Admin Order notification
 1. **Enable email notification** Allows to send order email notification to admin.
 1. **Notification email template** Allows to set order notification email template.
 1. **Emails receive Notification** Allows to set email receive by comma separater.
 
 
-Gift message configuration
+####Gift message configuration
 1. **Enable Gift message** Allows to show gift message option in checkout.
 
