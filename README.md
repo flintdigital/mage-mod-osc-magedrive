@@ -6,7 +6,7 @@ NEEDS TO BE TESTED AND EVAL'D
 
 ### Installation 
 Install using modgit: 
-`modgit add mage-mod-osc-magedrive git@github.com:nflint/mage-mod-osc-magedrive.git`
+`modgit add mage-mod-osc-magedrive git@github.com:flintdigital/mage-mod-osc-magedrive.git`
 
 ### System Configuration Setting
 1. **Enable One step Checkout** - Enable/Disable the One Page Checkout.
