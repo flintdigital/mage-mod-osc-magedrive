@@ -1090,3 +1090,8 @@ a {
     width: 100%;
 }
 }
+
+dl#checkout-payment-method-load dd {
+    float:none;
+    width: 100%;
+}
