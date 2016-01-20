@@ -253,12 +253,44 @@ class MD_Onestepcheckout_IndexController extends Mage_Core_Controller_Front_Acti
 		
 		// Ignore disable fields validation --- Only for 1..4.1.1
 		$this->setIgnoreValidation();
-		if(Mage::helper('onestepcheckout')->isShowShippingAddress()) {
-			if(!isset($billing_data['use_for_shipping']) || $billing_data['use_for_shipping'] != '1')	{		
-				$shipping_address_id = $this->getRequest()->getPost('shipping_address_id', false);
-				$this->getOnepage()->saveShipping($shipping_data, $shipping_address_id);
-			}
-		}		
+                
+                /*******************************************************************************************
+                 * Adrian's Hack:
+                 * 
+                 * The commented code bellow is the original code. 
+                 * There are 2 bugs in the logic, not nice. (or I'm missing something??)
+                 * Original Issue: when using same address for shipping and billing, when you set billing country to other than US, shipping methods available 
+                 * where not updated to international shipping methods.
+                 * 
+                 * BUG 1: it is updating shipping address data, ONLY if the following conditions are true:
+                 *      *   At the MD/OSC admin, the setting "Enable shipping to different address" is set to true. Notice that this setting is actually
+                 *          "show_shipping_address" in the code, which is what the method isShowShippingAddress() checks for.
+                 *      *   At checkout, the checkbox for Use different address for shipping is checked. This sets "use_for_shipping" to something != 1
+                 *      *   Perhaps they were aiming for optimization? Don't save this here, save it until later? But Shipping Method data gets fucked if shipping address is not updated
+                 * 
+                 * BUG 2: when it updates, it is actually using the Shipping Form Data (fields at checkout), which won't be updated with billing data if we use the same address
+                 *      *   Notice that it uses $shipping_data instead of $shipping_address_data (Check their definitions)
+                 */
+                
+                //ORIGINAL CODE:
+//                if(Mage::helper('onestepcheckout')->isShowShippingAddress()) {
+//			if(!isset($billing_data['use_for_shipping']) || $billing_data['use_for_shipping'] != '1')	{		
+//				$shipping_address_id = $this->getRequest()->getPost('shipping_address_id', false);
+//				$this->getOnepage()->saveShipping($shipping_data, $shipping_address_id);
+//			}
+//		}
+                //END ORIGINAL CODE
+		
+                
+                //Why doesn't the original code saves shipping info all the time? Let's just save it all the time to get updated shipping methods as response (BUG 1)
+                $shipping_address_id = $this->getRequest()->getPost('shipping_address_id', false);
+                //Use shipping_address_data (this is: if Ship to Billing Address, Billing Form data, if not, Shipping Form data), instead of shipping_data (Shipping Form data) (BUG 2)
+                $this->getOnepage()->saveShipping($shipping_address_data, $shipping_address_id);
+                
+                /**
+                 * END OF HACK
+                 *******************************************************************************************/
+                
 		$this->getOnepage()->saveBilling($billing_data, $billing_address_id);
 		if($billing_data['country_id']){
 			Mage::getModel('checkout/session')->getQuote()->getBillingAddress()->setData('country_id',$billing_data['country_id'])->save();
