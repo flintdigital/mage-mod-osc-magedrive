@@ -8,6 +8,17 @@ NEEDS TO BE TESTED AND EVAL'D
 Install using modgit: 
 `modgit add mage-mod-osc-magedrive git@github.com:flintdigital/mage-mod-osc-magedrive.git`
 
+### Upgrade
+Notice that we've added 3 (June 08 16) modifications to the original code. If we upgrade the plugin, we must merge these changes and any other commits we might have not documented over here.
+
+1. [Tweaking styles for payment method specific fields](https://github.com/flintdigital/mage-mod-osc-magedrive/commit/5e014f798d4fd7f36349aff724ff2da3c1d6fb2b)
+
+2. [Fixing issue for international shipping methods at checkout](https://github.com/flintdigital/mage-mod-osc-magedrive/commit/a0b861a4eb4450ba309590d1c846bcaa0f512122)
+
+3. [Removing old admin definition from etc/config.xml file](https://github.com/flintdigital/mage-mod-osc-magedrive/commit/801e7a040f3895788bc45da670f1f5ef99c28778)
+
+
+
 ### System Configuration Setting
 1. **Enable One step Checkout** - Enable/Disable the One Page Checkout.
 1. **Enable shipping to different address** Allow customer to shipping different address.
