@@ -55,17 +55,6 @@
             </paypal_prepare_line_items>
         </events>
     </frontend>
-    <admin>
-        <routers>
-            <onestepcheckoutadmin>
-                <use>admin</use>
-                <args>
-                    <module>MD_Onestepcheckout</module>
-                    <frontName>onestepcheckoutadmin</frontName>
-                </args>
-            </onestepcheckoutadmin>
-        </routers>
-    </admin>
     <adminhtml>
         <layout>
             <updates>
