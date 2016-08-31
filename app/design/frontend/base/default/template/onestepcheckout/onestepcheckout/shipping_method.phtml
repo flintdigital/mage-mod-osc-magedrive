@@ -30,28 +30,28 @@
 <?php $i=0;?>
 <dl class="sp-methods">
     <?php $_sole = count($_shippingRateGroups) == 1; foreach ($_shippingRateGroups as $code => $_rates): ?>
-		<?php $i++;?>
+        <?php $i++;?>
         <dt><?php echo $this->getCarrierName($code) ?></dt>
         <dd>
             <ul>
-			<?php $j=0;?>
+            <?php $j=0;?>
             <?php $_sole = $_sole && count($_rates) == 1; foreach ($_rates as $_rate): ?>
-				<?php $j++;?>
+                <?php $j++;?>
                 <li>
                    <?php if ($_rate->getErrorMessage()): ?>
                     <ul class="messages"><li class="error-msg"><ul><li><?php echo $_rate->getErrorMessage() ?></li></ul></li></ul>
                    <?php else: ?>
                         <?php if ($_sole) : ?>
-                        <span class="no-display"><input class="validate-one-required-by-name" name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" onclick="save_shipping_method(shipping_method_url, enable_update_payment);" /></span>
+                        <span class="no-display"><input class="validate-one-required-by-name" name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" onclick="save_address_information(save_address_url);" /></span>
                         <?php else: ?>
-						<?php if($i!=count($_shippingRateGroups) ||$j!=count($_rates)):?>
-							<style type="text/css">
-								#advice-validate-one-required-by-name-s_method_<?php echo$_rate->getCode()?>{
-									display: none !important;
-								}
-							</style>
-						<?php endif;?>
-                        <input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>"<?php if($_rate->getCode()===$this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio validate-one-required-by-name" onclick="save_shipping_method(shipping_method_url, enable_update_payment);" />
+                        <?php if($i!=count($_shippingRateGroups) ||$j!=count($_rates)):?>
+                            <style type="text/css">
+                                #advice-validate-one-required-by-name-s_method_<?php echo$_rate->getCode()?>{
+                                    display: none !important;
+                                }
+                            </style>
+                        <?php endif;?>
+                        <input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>"<?php if($_rate->getCode()===$this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio validate-one-required-by-name" onclick="save_address_information(save_address_url);" />
                         <?php endif; ?>
                         <label for="s_method_<?php echo $_rate->getCode() ?>"><?php echo $_rate->getMethodTitle() ?>
                         <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
